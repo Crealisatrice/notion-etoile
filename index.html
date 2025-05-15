@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notation par étoiles</title>
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #fdf6f0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .rating-container {
+      display: flex;
+      gap: 0.4rem;
+      background: #ffffff;
+      padding: 0.6rem 1rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .star {
+      font-size: 2rem;
+      cursor: pointer;
+      color: #ddd;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+      border-radius: 50%;
+      padding: 0.2rem;
+    }
+
+    .filled.rose { color: #e77da1; }
+    .filled.bleu { color: #5fa8d3; }
+    .filled.orange { color: #ffa500; }
+    .filled.vert { color: #7cc576; }
+    .filled.noir { color: #444; }
+
+    .theme-select {
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="rating-container" id="rating"></div>
+  <select class="theme-select" id="themeSelect">
+    <option value="rose">Rose</option>
+    <option value="bleu">Bleu</option>
+    <option value="orange">Orange</option>
+    <option value="vert">Vert</option>
+    <option value="noir">Noir</option>
+  </select>
+
+  <script>
+    const ratingContainer = document.getElementById('rating');
+    const themeSelect = document.getElementById('themeSelect');
+    let currentRating = parseInt(localStorage.getItem('starRating') || 0);
+    let currentTheme = localStorage.getItem('starTheme') || 'rose';
+
+    themeSelect.value = currentTheme;
+
+    function renderStars(rating, theme) {
+      ratingContainer.innerHTML = '';
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('span');
+        star.textContent = '★';
+        star.classList.add('star');
+        if (i <= rating) star.classList.add('filled', theme);
+        star.addEventListener('click', () => {
+          currentRating = i;
+          localStorage.setItem('starRating', i);
+          renderStars(currentRating, currentTheme);
+        });
+        ratingContainer.appendChild(star);
+      }
+    }
+
+    themeSelect.addEventListener('change', () => {
+      currentTheme = themeSelect.value;
+      localStorage.setItem('starTheme', currentTheme);
+      renderStars(currentRating, currentTheme);
+    });
+
+    renderStars(currentRating, currentTheme);
+  </script>
+</body>
+</html>
